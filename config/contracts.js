@@ -5,14 +5,14 @@ module.exports = {
     deployment: {
       host: "localhost", // Host of the blockchain node
       port: 8546, // Port of the blockchain node
-      type: "ws" // Type of connection (ws or rpc),
+      type: "ws", // Type of connection (ws or rpc),
       // Accounts to use instead of the default account to populate your wallet
-      /*,accounts: [
+      accounts: [
         {
-          privateKey: "your_private_key",
-          balance: "5 ether"  // You can set the balance of the account in the dev environment
-                              // Balances are in Wei, but you can specify the unit with its name
-        },
+          privateKey: "0x3300be0239487216ce90d43aea91f38381dd4dc3493667577f486bc35d13fad2",
+          balance: "100 ether"  // You can set the balance of the account in the dev environment
+                                   // Balances are in Wei, but you can specify the unit with its name
+        }/*,
         {
           privateKeyFile: "path/to/file", // Either a keystore or a list of keys, separated by , or ;
           password: "passwordForTheKeystore" // Needed to decrypt the keystore file
@@ -22,8 +22,8 @@ module.exports = {
           addressIndex: "0", // Optionnal. The index to start getting the address
           numAddresses: "1", // Optionnal. The number of addresses to get
           hdpath: "m/44'/60'/0'/0/" // Optionnal. HD derivation path
-        }
-      ]*/
+        }*/
+      ]
     },
     // order of connections the dapp should connect to
     dappConnection: [
