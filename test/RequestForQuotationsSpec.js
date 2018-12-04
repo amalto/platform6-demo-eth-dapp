@@ -24,7 +24,7 @@ contract("RequestForQuotations", function () {
     });
 
     it("Submit a new RFQ", async function () {
-        let resultNbrRFQs = await RequestForQuotations.methods.nbrSubmittedRFQs().call();
+        let resultNbrRFQs = await RequestForQuotations.methods.nbrRFQs().call();
         assert.strictEqual(parseInt(resultNbrRFQs, 10), 0);
 
         const id = uuidv4();
@@ -33,13 +33,15 @@ contract("RequestForQuotations", function () {
 
         await RequestForQuotations.methods.submitRFQ(id, issuedAt, ubl).send();
 
+        resultNbrRFQs = await RequestForQuotations.methods.nbrRFQs().call();
+        assert.strictEqual(parseInt(resultNbrRFQs, 10), 1);
+
+        const resultIndex = await RequestForQuotations.methods.getRFQIndex(id).call();
+        assert.strictEqual(parseInt(resultIndex, 10), 0);
+
         const resultUBL = await RequestForQuotations.methods.getRFQUBL(id).call();
         assert.strictEqual(resultUBL, ubl);
 
-        resultNbrRFQs = await RequestForQuotations.methods.nbrSubmittedRFQs().call();
-        assert.strictEqual(parseInt(resultNbrRFQs, 10), 1);
-
-        const resultId = await RequestForQuotations.methods.confirmationIdsToExternalIds(1).call();
-        assert.strictEqual(resultId, id);
+        // TODO add another RFQ
     });
 });

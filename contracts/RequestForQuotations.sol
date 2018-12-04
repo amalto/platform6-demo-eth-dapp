@@ -3,31 +3,54 @@ pragma solidity ^0.5.1;
 
 contract RequestForQuotations {
 
-  enum RFQStatus { Received, Declined }
+  /* ------------- RFQ Model ------------- */
+
+  enum RFQStatus { Received, Declined, QuoteProvided }
 
   struct RequestForQuotation {
+    string id;
     uint issuedAt;
     string ubl;
     RFQStatus status;
+    uint[] quoteIds;
   }
 
   // A string field cannot be indexed in a event, this is why a confirmationId of type uint was introduced.
   // As an added benefit, it also allows to count the number of submitted RFQs.
-  event RFQSubmitted(uint indexed confirmationId, string id);
+  event RFQReceived(uint indexed index, string id);
 
-  /* ------------- State ------------- */
+  /* ------------- Quote Model ------------- */
 
-  address private buyer;
+  enum QuoteStatus { Offer, Decline }
 
-  uint public nbrSubmittedRFQs = 0;
+  struct Quote {
+    string id;
+    uint issuedAt;
+    string ubl;
+    QuoteStatus status;
+    uint rfqIndex;
+    address supplier; // TODO add to event index
+  }
 
-  // Maps the confirmation id to the external id
-  mapping(uint => string) public confirmationIdsToExternalIds;
+  event QuoteReceived(uint indexed index, string id);
 
-  // Maps the external id to the RFQ
-  mapping(string => RequestForQuotation) rfqs;
+  /* ------------- RFQ State ------------- */
+
+  RequestForQuotation[] rfqs;
+
+  // Maps the id to the RFQ index
+  mapping(string => uint) rfqIdToIndexMap;
+
+  /* ------------- Quote State ------------- */
+
+  Quote[] quotes;
+
+  // Maps the id to the quote index
+  mapping(string => uint) quoteIdToIndexMap;
 
   /* ------------- RFQ can only be submitted by a buyer ------------- */
+
+  address private buyer;
 
   constructor() public {
     buyer = msg.sender;
@@ -44,20 +67,33 @@ contract RequestForQuotations {
 
   /* ------------- RFQ logic ------------- */
 
-  function getRFQUBL(string memory id) public view returns (string memory ubl) {
-    return rfqs[id].ubl;
+  function nbrRFQs() public view returns (uint number) {
+    return rfqs.length;
   }
 
-  function submitRFQ(string memory id, uint issuedAt, string memory ubl) public onlyBuyer returns (uint confirmationId)  {
-    confirmationId = nbrSubmittedRFQs + 1;
-    nbrSubmittedRFQs = confirmationId;
+  function getRFQIndex(string memory id) public view returns (uint rfqId) {
+    return rfqIdToIndexMap[id];
+  }
 
-    confirmationIdsToExternalIds[confirmationId] = id;
-    rfqs[id].issuedAt = issuedAt;
-    rfqs[id].ubl = ubl;
-    rfqs[id].status = RFQStatus.Received;
+  function getRFQUBL(string memory id) public view returns (string memory ubl) {
+    uint index = rfqIdToIndexMap[id];
+    if (rfqs.length <= index) {
+      return "";
+    } else {
+      return rfqs[index].ubl;
+    }
+  }
 
-    emit RFQSubmitted(confirmationId, id);
-    return confirmationId;
+  function submitRFQ(string memory id, uint issuedAt, string memory ubl) public onlyBuyer returns (uint index)  {
+    index = rfqs.length++;
+    rfqIdToIndexMap[id] = index;
+
+    rfqs[index].id = id;
+    rfqs[index].issuedAt = issuedAt;
+    rfqs[index].ubl = ubl;
+    rfqs[index].status = RFQStatus.Received;
+
+    emit RFQReceived(index, id);
+    return index;
   }
 }
