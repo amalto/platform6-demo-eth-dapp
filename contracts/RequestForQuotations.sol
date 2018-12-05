@@ -15,8 +15,7 @@ contract RequestForQuotations {
         bytes32[] quoteIds;
     }
 
-    // TODO Maybe add ubl?
-    event RFQReceived(bytes32 id, string ubl);
+    event RFQReceived(bytes32 id, uint issuedAt, string ubl);
 
 
     /* ------------- Quote Model ------------- */
@@ -32,8 +31,8 @@ contract RequestForQuotations {
         address supplier;
     }
 
-    event QuoteReceived(address indexed supplier, bytes32 rfqId, bytes32 quoteId);
-    event RFQDeclined(address indexed supplier, bytes32 rfqId, bytes32 quoteId);
+    event QuoteReceived(address indexed supplier, bytes32 rfqId, bytes32 quoteId, uint issuedAt, string ubl);
+    event RFQDeclined(address indexed supplier, bytes32 rfqId, bytes32 quoteId, uint issuedAt);
 
 
     /* ------------- RFQ State ------------- */
@@ -72,39 +71,60 @@ contract RequestForQuotations {
 
     /* ------------- RFQ logic ------------- */
 
-    function getRFQUBL(bytes32 id) public view returns (string memory ubl) {
-        if (rfqs[id].id == id) {
-            return rfqs[id].ubl;
-        } else {
-            return "";
-        }
+    function getRFQ(bytes32 id) public view returns (
+        uint issuedAt,
+        string memory ubl,
+        RFQStatus status,
+        bytes32[] memory quoteIds
+    ) {
+        // Make sure the RFQ exists
+        require(rfqs[id].id == id);
+
+        issuedAt = rfqs[id].issuedAt;
+        ubl = rfqs[id].ubl;
+        status = rfqs[id].status;
+        quoteIds = rfqs[id].quoteIds;
     }
 
-    function submitRFQ(bytes32 id, uint issuedAt, string memory ubl) public onlyBuyer returns (bool success)  {
+    function submitRFQ(bytes32 id, uint issuedAt, string memory ubl) public onlyBuyer  {
+        // Make sure the RFQ is submitted only once
+        require(rfqs[id].id == 0x0);
+
         rfqs[id].id = id;
         rfqs[id].issuedAt = issuedAt;
         rfqs[id].ubl = ubl;
         rfqs[id].status = RFQStatus.Received;
 
         nbrOfRFQs++;
-        emit RFQReceived(id, ubl);
-        return true;
+        emit RFQReceived(id, issuedAt, ubl);
     }
 
 
     /* ------------- Quote logic ------------- */
 
-    function getQuoteUBL(bytes32 id) public view returns (string memory ubl) {
-        if (quotes[id].id == id) {
-            return quotes[id].ubl;
-        } else {
-            return "";
-        }
+    function getQuote(bytes32 id) public view returns (
+        uint issuedAt,
+        string memory ubl,
+        QuoteStatus status,
+        bytes32 rfqId,
+        address supplier
+    ) {
+        // Make sure the quote exists
+        require(quotes[id].id == id);
+
+        issuedAt = quotes[id].issuedAt;
+        ubl = quotes[id].ubl;
+        status = quotes[id].status;
+        rfqId = quotes[id].rfqId;
+        supplier = quotes[id].supplier;
     }
 
-    function submitQuote(bytes32 id, bytes32 rfqId, uint issuedAt, string memory ubl) public returns (bool success)  {
+    function submitQuote(bytes32 id, bytes32 rfqId, uint issuedAt, string memory ubl) public  {
         // Make sure the RFQ exists
         require(rfqs[rfqId].id == rfqId);
+
+        // Make sure the quote is submitted only once
+        require(quotes[id].id == 0x0);
 
         // Create the quote and store it
         address supplier = msg.sender;
@@ -115,13 +135,15 @@ contract RequestForQuotations {
         rfqs[rfqId].quoteIds.push(id);
 
         nbrOfQuotes++;
-        emit QuoteReceived(supplier, rfqId, id);
-        return true;
+        emit QuoteReceived(supplier, rfqId, id, issuedAt, ubl);
     }
 
-    function declineRFQ(bytes32 id, bytes32 rfqId, uint issuedAt) public returns (bool success)  {
+    function declineRFQ(bytes32 id, bytes32 rfqId, uint issuedAt) public  {
         // Make sure the RFQ exists
         require(rfqs[rfqId].id == rfqId);
+
+        // Make sure the quote is submitted only once
+        require(quotes[id].id == 0x0);
 
         // Create the quote and store it
         address supplier = msg.sender;
@@ -134,7 +156,6 @@ contract RequestForQuotations {
         rfqs[rfqId].quoteIds.push(id);
 
         nbrOfQuotes++;
-        emit QuoteReceived(supplier, rfqId, id);
-        return true;
+        emit RFQDeclined(supplier, rfqId, id, issuedAt);
     }
 }
