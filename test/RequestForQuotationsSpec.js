@@ -26,7 +26,7 @@ contract("RequestForQuotations", function () {
     });
 
     it("Submit a new RFQ", async function () {
-        let resultNbrRFQs = await RequestForQuotations.methods.nbrRFQs().call();
+        let resultNbrRFQs = await RequestForQuotations.methods.nbrOfRFQs().call();
         assert.strictEqual(parseInt(resultNbrRFQs, 10), 0);
 
         const id = uuidToHex(uuidv4(), true);
@@ -35,12 +35,23 @@ contract("RequestForQuotations", function () {
 
         await RequestForQuotations.methods.submitRFQ(id, issuedAt, ubl).send();
 
-        resultNbrRFQs = await RequestForQuotations.methods.nbrRFQs().call();
+        resultNbrRFQs = await RequestForQuotations.methods.nbrOfRFQs().call();
         assert.strictEqual(parseInt(resultNbrRFQs, 10), 1);
 
         const resultUBL = await RequestForQuotations.methods.getRFQUBL(id).call();
         assert.strictEqual(resultUBL, ubl);
 
-        // TODO add another RFQ
+        // Add another RFQ
+        const id2 = uuidToHex(uuidv4(), true);
+        const issuedAt2 = new Date().getTime();
+        const ubl2 = '<RequestForQuotation xmlns=lol... </RequestForQuotation>';
+
+        await RequestForQuotations.methods.submitRFQ(id2, issuedAt2, ubl2).send();
+
+        resultNbrRFQs = await RequestForQuotations.methods.nbrOfRFQs().call();
+        assert.strictEqual(parseInt(resultNbrRFQs, 10), 2);
+
+        const resultUBL2 = await RequestForQuotations.methods.getRFQUBL(id2).call();
+        assert.strictEqual(resultUBL2, ubl2);
     });
 });
