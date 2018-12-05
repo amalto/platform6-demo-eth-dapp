@@ -1,4 +1,5 @@
 const uuidv4 = require('uuid/v4');
+const uuidToHex = require('uuid-to-hex');
 const RequestForQuotations = embark.require('Embark/contracts/RequestForQuotations');
 const emptyString = "";
 
@@ -19,7 +20,8 @@ config({
 contract("RequestForQuotations", function () {
 
     it("Return empty string for a non-existent RFQ", async function () {
-        const result = await RequestForQuotations.methods.getRFQUBL(emptyString).call();
+        const id = uuidToHex(uuidv4(), true);
+        const result = await RequestForQuotations.methods.getRFQUBL(id).call();
         assert.strictEqual(result, emptyString);
     });
 
@@ -27,7 +29,7 @@ contract("RequestForQuotations", function () {
         let resultNbrRFQs = await RequestForQuotations.methods.nbrRFQs().call();
         assert.strictEqual(parseInt(resultNbrRFQs, 10), 0);
 
-        const id = uuidv4();
+        const id = uuidToHex(uuidv4(), true);
         const issuedAt = new Date().getTime();
         const ubl = '<RequestForQuotation xmlns=... </RequestForQuotation>';
 
@@ -35,9 +37,6 @@ contract("RequestForQuotations", function () {
 
         resultNbrRFQs = await RequestForQuotations.methods.nbrRFQs().call();
         assert.strictEqual(parseInt(resultNbrRFQs, 10), 1);
-
-        const resultIndex = await RequestForQuotations.methods.getRFQIndex(id).call();
-        assert.strictEqual(parseInt(resultIndex, 10), 0);
 
         const resultUBL = await RequestForQuotations.methods.getRFQUBL(id).call();
         assert.strictEqual(resultUBL, ubl);

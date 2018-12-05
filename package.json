@@ -13,6 +13,7 @@
     "react": "^16.3.2",
     "react-bootstrap": "0.32.1",
     "react-dom": "^16.3.2",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "uuid-to-hex": "^1.0.3"
   }
 }
