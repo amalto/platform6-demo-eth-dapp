@@ -2,7 +2,6 @@ const uuidv4 = require('uuid/v4');
 const uuidToHex = require('uuid-to-hex');
 const RequestForQuotations = embark.require('Embark/contracts/RequestForQuotations');
 
-const emptyString = "";
 const revertErrorMessage = "VM Exception while processing transaction: revert";
 
 const RFQStatus = {Received: '0', Declined: '1', QuoteProvided: '2'};
@@ -41,7 +40,6 @@ contract("RequestForQuotations", function () {
         assert.strictEqual(parseInt(result.issuedAt, 10), issuedAt);
         assert.strictEqual(result.ubl, ubl);
         assert.strictEqual(result.status, RFQStatus.Received);
-        assert.equal(result.quoteIds.length, 0);
 
         // Add another RFQ
         const id2 = uuidToHex(uuidv4(), true);
@@ -57,7 +55,6 @@ contract("RequestForQuotations", function () {
         assert.strictEqual(parseInt(result2.issuedAt, 10), issuedAt2);
         assert.strictEqual(result2.ubl, ubl2);
         assert.strictEqual(result.status, RFQStatus.Received);
-        assert.equal(result.quoteIds.length, 0);
 
         // It should not be possible to submit the same RFQ twice and accidentally modify an existing one
         try {

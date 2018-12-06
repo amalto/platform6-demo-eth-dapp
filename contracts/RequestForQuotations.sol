@@ -12,7 +12,6 @@ contract RequestForQuotations {
         uint issuedAt;
         string ubl;
         RFQStatus status;
-        bytes32[] quoteIds;
     }
 
     event RFQReceived(bytes32 id, uint issuedAt, string ubl);
@@ -39,16 +38,16 @@ contract RequestForQuotations {
 
     uint public nbrOfRFQs;
 
-    // Maps the id to the RFQ index
-    mapping(bytes32 => RequestForQuotation) public rfqs;
+    // Maps the id to the RFQ
+    mapping(bytes32 => RequestForQuotation) rfqs;
 
 
     /* ------------- Quote State ------------- */
 
     uint public nbrOfQuotes;
 
-    // Maps the id to the quote index
-    mapping(bytes32 => Quote) public quotes;
+    // Maps the id to the quote
+    mapping(bytes32 => Quote) quotes;
 
 
     /* ------------- RFQ can only be submitted by a buyer ------------- */
@@ -74,8 +73,7 @@ contract RequestForQuotations {
     function getRFQ(bytes32 id) public view returns (
         uint issuedAt,
         string memory ubl,
-        RFQStatus status,
-        bytes32[] memory quoteIds
+        RFQStatus status
     ) {
         // Make sure the RFQ exists
         require(rfqs[id].id == id);
@@ -83,7 +81,6 @@ contract RequestForQuotations {
         issuedAt = rfqs[id].issuedAt;
         ubl = rfqs[id].ubl;
         status = rfqs[id].status;
-        quoteIds = rfqs[id].quoteIds;
     }
 
     function submitRFQ(bytes32 id, uint issuedAt, string memory ubl) public onlyBuyer  {
@@ -132,7 +129,6 @@ contract RequestForQuotations {
 
         // Update the corresponding RFQ
         rfqs[rfqId].status = RFQStatus.QuoteProvided;
-        rfqs[rfqId].quoteIds.push(id);
 
         nbrOfQuotes++;
         emit QuoteReceived(supplier, rfqId, id, issuedAt, ubl);
@@ -153,7 +149,6 @@ contract RequestForQuotations {
         if (rfqs[rfqId].status == RFQStatus.Received) {
             rfqs[rfqId].status = RFQStatus.Declined;
         }
-        rfqs[rfqId].quoteIds.push(id);
 
         nbrOfQuotes++;
         emit RFQDeclined(supplier, rfqId, id, issuedAt);
