@@ -21,6 +21,7 @@ config({
 
 
 // FIXME add web3js call to fetch events and make sure they are generated correctly
+// TODO add how to listen to events in Embark doc and how to test a reverted transaction
 contract("RequestForQuotations", function () {
 
     it("Submit a new RFQ", async function () {
@@ -57,11 +58,9 @@ contract("RequestForQuotations", function () {
         assert.strictEqual(result.status, RFQStatus.Received);
 
         // It should not be possible to submit the same RFQ twice and accidentally modify an existing one
-        try {
-            await RequestForQuotations.methods.submitRFQ(id, issuedAt, ubl2).send();
-        } catch (err) {
-            assert.strictEqual(err.message, revertErrorMessage);
-        }
+        await assertTransactionReverted(function () {
+            return RequestForQuotations.methods.submitRFQ(id, issuedAt, ubl2).send();
+        });
 
         resultNbrOfRFQs = await RequestForQuotations.methods.nbrOfRFQs().call();
         assert.strictEqual(parseInt(resultNbrOfRFQs, 10), 2);
@@ -75,11 +74,18 @@ contract("RequestForQuotations", function () {
         assert.strictEqual(parseInt(resultNbrOfRFQs, 10), 2);
 
         const id = uuidToHex(uuidv4(), true);
-        // FIXME factor this code
-        try {
-            await RequestForQuotations.methods.getRFQ(id).call();
-        } catch (err) {
-            assert.strictEqual(err.message, revertErrorMessage);
-        }
+
+        await assertTransactionReverted(function () {
+            return RequestForQuotations.methods.getRFQ(id).call();
+        });
     });
 });
+
+
+async function assertTransactionReverted(action) {
+    try {
+        await action();
+    } catch (err) {
+        assert.strictEqual(err.message, revertErrorMessage);
+    }
+}
