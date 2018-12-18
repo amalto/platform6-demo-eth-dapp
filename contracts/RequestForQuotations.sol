@@ -5,33 +5,33 @@ contract RequestForQuotations {
 
     /* ------------- RFQ Model ------------- */
 
-    enum RFQStatus { Received, Declined, QuoteProvided }
+    enum RFQStatus {Received, Declined, QuoteProvided}
 
     struct RequestForQuotation {
-        bytes32 id; // Useful for presence verification
+        bytes16 id; // Useful for presence verification
         uint issuedAt;
         string ubl;
         RFQStatus status;
     }
 
-    event RFQReceived(bytes32 id, uint issuedAt, string ubl);
+    event RFQReceived(bytes16 id, uint issuedAt, string ubl);
 
 
     /* ------------- Quote Model ------------- */
 
-    enum QuoteStatus { Offer, Decline }
+    enum QuoteStatus {Offer, Decline}
 
     struct Quote {
-        bytes32 id; // Useful for presence verification
+        bytes16 id; // Useful for presence verification
         uint issuedAt;
         string ubl;
         QuoteStatus status;
-        bytes32 rfqId;
+        bytes16 rfqId;
         address supplier;
     }
 
-    event QuoteReceived(address indexed supplier, bytes32 rfqId, bytes32 quoteId, uint issuedAt, string ubl);
-    event RFQDeclined(address indexed supplier, bytes32 rfqId, bytes32 quoteId, uint issuedAt);
+    event QuoteReceived(address indexed supplier, bytes16 rfqId, bytes16 quoteId, uint issuedAt, string ubl);
+    event RFQDeclined(address indexed supplier, bytes16 rfqId, bytes16 quoteId, uint issuedAt);
 
 
     /* ------------- RFQ State ------------- */
@@ -39,7 +39,7 @@ contract RequestForQuotations {
     uint public nbrOfRFQs;
 
     // Maps the id to the RFQ
-    mapping(bytes32 => RequestForQuotation) rfqs;
+    mapping(bytes16 => RequestForQuotation) rfqs;
 
 
     /* ------------- Quote State ------------- */
@@ -47,7 +47,7 @@ contract RequestForQuotations {
     uint public nbrOfQuotes;
 
     // Maps the id to the quote
-    mapping(bytes32 => Quote) quotes;
+    mapping(bytes16 => Quote) quotes;
 
 
     /* ------------- RFQ can only be submitted by a buyer ------------- */
@@ -70,7 +70,7 @@ contract RequestForQuotations {
 
     /* ------------- RFQ logic ------------- */
 
-    function getRFQ(bytes32 id) public view returns (
+    function getRFQ(bytes16 id) public view returns (
         uint issuedAt,
         string memory ubl,
         RFQStatus status
@@ -83,7 +83,7 @@ contract RequestForQuotations {
         status = rfqs[id].status;
     }
 
-    function submitRFQ(bytes32 id, uint issuedAt, string memory ubl) public onlyBuyer  {
+    function submitRFQ(bytes16 id, uint issuedAt, string memory ubl) public onlyBuyer {
         // Make sure the RFQ is submitted only once
         require(rfqs[id].id == 0x0);
 
@@ -99,11 +99,11 @@ contract RequestForQuotations {
 
     /* ------------- Quote logic ------------- */
 
-    function getQuote(bytes32 id) public view returns (
+    function getQuote(bytes16 id) public view returns (
         uint issuedAt,
         string memory ubl,
         QuoteStatus status,
-        bytes32 rfqId,
+        bytes16 rfqId,
         address supplier
     ) {
         // Make sure the quote exists
@@ -116,7 +116,7 @@ contract RequestForQuotations {
         supplier = quotes[id].supplier;
     }
 
-    function submitQuote(bytes32 id, bytes32 rfqId, uint issuedAt, string memory ubl) public  {
+    function submitQuote(bytes16 id, bytes16 rfqId, uint issuedAt, string memory ubl) public {
         // Make sure the RFQ exists
         require(rfqs[rfqId].id == rfqId);
 
@@ -134,7 +134,7 @@ contract RequestForQuotations {
         emit QuoteReceived(supplier, rfqId, id, issuedAt, ubl);
     }
 
-    function declineRFQ(bytes32 id, bytes32 rfqId, uint issuedAt) public  {
+    function declineRFQ(bytes16 id, bytes16 rfqId, uint issuedAt) public {
         // Make sure the RFQ exists
         require(rfqs[rfqId].id == rfqId);
 
