@@ -31,11 +31,9 @@ contract RequestForQuotationsTest {
         uint resultIssuedAt;
         string memory resultUbl;
         RequestForQuotations.RFQStatus resultStatus;
-        bytes32[] memory quoteIds;
-        (resultIssuedAt, resultUbl, resultStatus, quoteIds) = rfqContract.getRFQ(id);
+        (resultIssuedAt, resultUbl, resultStatus) = rfqContract.getRFQ(id);
         Assert.equal(resultIssuedAt, issuedAt, "issuedAt field is wrong");
         Assert.equal(resultUbl, ubl, "ubl field is wrong");
         Assert.equal(uint(resultStatus), uint(RequestForQuotations.RFQStatus.Received), "status field is wrong");
-        Assert.equal(quoteIds.length, 0, "quoteIds field is wrong");
     }
 }
