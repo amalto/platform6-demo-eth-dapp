@@ -1,18 +1,28 @@
 {
-  "name": "app_name",
-  "version": "0.0.1",
-  "description": "",
-  "main": "Gruntfile.js",
+  "name": "p6_demo",
+  "version": "4.0.2",
+  "description": "Demo DApp for P6",
+  "homepage": "https://github.com/embark-framework/embark/tree/master/dapps/templates/demo#readme",
+  "bugs": "https://github.com/embark-framework/embark/issues",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "embark test"
   },
+  "keywords": [],
   "author": "",
-  "license": "ISC",
-  "homepage": "",
+  "license": "MIT",
+  "repository": {
+    "directory": "dapps/templates/demo",
+    "type": "git",
+    "url": "https://github.com/embark-framework/embark.git"
+  },
+  "devDependencies": {
+    "embarkjs-connector-web3": "^4.0.0",
+    "react": "16.8.6",
+    "react-bootstrap": "0.32.4",
+    "react-dom": "16.8.6"
+  },
+  "gitHead": "21f5367bebe10594ffcc26f3aa4b574b1226472a",
   "dependencies": {
-    "react": "^16.3.2",
-    "react-bootstrap": "0.32.1",
-    "react-dom": "^16.3.2",
     "uuid": "^3.3.2",
     "uuid-to-hex": "^1.0.3"
   }

@@ -1,8 +1,8 @@
 .embark
 .idea
-chains.json
 config/production/password
 config/livenet/password
 coverage
 dist
+embarkArtifacts
 node_modules

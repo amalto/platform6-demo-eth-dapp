@@ -1,6 +1,6 @@
 const uuidv4 = require('uuid/v4');
 const uuidToHex = require('uuid-to-hex');
-const RequestForQuotations = embark.require('Embark/contracts/RequestForQuotations');
+const RequestForQuotations = require('Embark/contracts/RequestForQuotations');
 
 const revertErrorMessage = "VM Exception while processing transaction: revert";
 
@@ -16,14 +16,15 @@ config({
             // args: [100]
         }
     }
-}, (err, theAccounts) => {
-    accounts = theAccounts;
+}, (_err, web3_accounts) => {
+    accounts = web3_accounts
 });
 
 
 // FIXME add web3js call to fetch events and make sure they are generated correctly
 // TODO add how to listen to events in Embark doc and how to test a reverted transaction
 contract("RequestForQuotations", function () {
+    this.timeout(0);
 
     it("Submit a new RFQ", async function () {
         await checkNumberOfRFQsIs(0);
