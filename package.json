@@ -1,9 +1,9 @@
 {
   "name": "p6_demo",
-  "version": "4.0.2",
+  "version": "6.0.0",
   "description": "Demo DApp for P6",
-  "homepage": "https://github.com/embark-framework/embark/tree/master/dapps/templates/demo#readme",
-  "bugs": "https://github.com/embark-framework/embark/issues",
+  "homepage": "https://github.com/embarklabs/embark/tree/master/dapps/templates/demo#readme",
+  "bugs": "https://github.com/embarklabs/embark/issues",
   "scripts": {
     "test": "embark test"
   },
@@ -13,17 +13,32 @@
   "repository": {
     "directory": "dapps/templates/demo",
     "type": "git",
-    "url": "https://github.com/embark-framework/embark.git"
+    "url": "https://github.com/embarklabs/embark.git"
   },
   "devDependencies": {
-    "embarkjs-connector-web3": "^4.0.0",
-    "react": "16.8.6",
-    "react-bootstrap": "0.32.4",
-    "react-dom": "16.8.6"
-  },
-  "gitHead": "21f5367bebe10594ffcc26f3aa4b574b1226472a",
-  "dependencies": {
-    "uuid": "^3.3.2",
+    "bootstrap": "4.5.2",
+    "classnames": "2.2.6",
+    "embark": "^6.0.0",
+    "embark-basic-pipeline": "^6.0.0",
+    "embark-geth": "^6.0.0",
+    "embark-graph": "^6.0.0",
+    "embark-ipfs": "^6.0.0",
+    "embark-parity": "^6.0.0",
+    "embark-profiler": "^6.0.0",
+    "embark-swarm": "^6.0.0",
+    "embark-whisper-geth": "^6.0.0",
+    "embarkjs": "^6.0.0",
+    "embarkjs-ens": "^6.0.0",
+    "embarkjs-ipfs": "^6.0.0",
+    "embarkjs-swarm": "^6.0.0",
+    "embarkjs-web3": "^6.0.0",
+    "embarkjs-whisper": "^6.0.0",
+    "jquery": "^3.5.1",
+    "popper.js": "1.16.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "reactstrap": "8.5.1",
+    "uuid": "^8.3.0",
     "uuid-to-hex": "^1.0.3"
   }
 }

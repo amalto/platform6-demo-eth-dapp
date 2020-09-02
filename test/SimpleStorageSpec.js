@@ -1,23 +1,25 @@
-/*global contract, config, it, assert*/
-const SimpleStorage = require('Embark/contracts/SimpleStorage');
+/*global artifacts, contract, config, it, assert, web3*/
+const SimpleStorage = artifacts.require('SimpleStorage');
 
 let accounts;
 
-// For documentation please see https://embark.status.im/docs/contracts_testing.html
+// For documentation please see https://framework.embarklabs.io/docs/contracts_testing.html
 config({
-    //deployment: {
+    //blockchain: {
     //  accounts: [
     //    // you can configure custom accounts with a custom balance
-    //    // see https://embark.status.im/docs/contracts_testing.html#Configuring-accounts
+    //    // see https://framework.embarklabs.io/docs/contracts_testing.html#Configuring-accounts
     //  ]
     //},
     contracts: {
-        "SimpleStorage": {
-            args: [100]
+        deploy: {
+            "SimpleStorage": {
+                args: [100]
+            }
         }
     }
 }, (_err, web3_accounts) => {
-    accounts = web3_accounts
+    accounts = web3_accounts;
 });
 
 contract("SimpleStorage", function () {
@@ -29,13 +31,12 @@ contract("SimpleStorage", function () {
     });
 
     it("set storage value", async function () {
-        const newValue = 150;
-        await SimpleStorage.methods.set(newValue).send();
+        await SimpleStorage.methods.set(150).send({from: web3.eth.defaultAccount});
         let result = await SimpleStorage.methods.get().call();
-        assert.strictEqual(parseInt(result, 10), newValue);
+        assert.strictEqual(parseInt(result, 10), 150);
     });
 
-    it("should have account with balance", async function() {
+    it("should have account with balance", async function () {
         let balance = await web3.eth.getBalance(accounts[0]);
         assert.ok(parseInt(balance, 10) > 0);
     });

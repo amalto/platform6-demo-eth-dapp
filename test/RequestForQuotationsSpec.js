@@ -1,19 +1,20 @@
-const uuidv4 = require('uuid/v4');
+const {v4: uuidv4} = require('uuid');
 const uuidToHex = require('uuid-to-hex');
-const RequestForQuotations = require('Embark/contracts/RequestForQuotations');
-
 const revertErrorMessage = "VM Exception while processing transaction: revert";
 
 const RFQStatus = {Received: '0', Declined: '1', QuoteProvided: '2'};
 const QuoteStatus = {Offer: '0', Decline: '1'};
 const rfqId = uuidToHex(uuidv4(), true);
+const RequestForQuotations = artifacts.require('RequestForQuotations');
 
 let accounts;
 
 config({
     contracts: {
-        "RequestForQuotations": {
-            // args: [100]
+        deploy: {
+            "RequestForQuotations": {
+                // args: [100]
+            }
         }
     }
 }, (_err, web3_accounts) => {

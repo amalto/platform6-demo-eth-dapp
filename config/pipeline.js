@@ -4,9 +4,10 @@
 // performed during builds.
 
 // To enable Flow type checking refer to the preconfigured template:
-//   https://github.com/embark-framework/embark-flow-template
+//   https://github.com/embarklabs/embark-flow-template
 // A new DApp can be created from that template with:
 //   embark new --template flow
+// NOTE: the `--template` option is DEPRECATED in v5.
 
 module.exports = {
   typescript: false,
@@ -17,10 +18,11 @@ module.exports = {
   // builds.
 
   // To enable TypeScript type checking refer to the preconfigured template:
-  //   https://github.com/embark-framework/embark-typescript-template
+  //   https://github.com/embarklabs/embark-typescript-template
   // A new DApp can be created from that template with:
   //   embark new --template typescript
-  enabled: true 
+  // NOTE: the `--template` option is DEPRECATED in v5.
+  enabled: true
   // Setting `enabled: false` in this config will disable Embark's built-in Webpack
   // pipeline. The developer will need to use a different frontend build tool, such as 
   // `create-react-app` or Angular CLI to build their dapp

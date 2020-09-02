@@ -3,17 +3,23 @@
   "app": {
     "js/dapp.js": ["app/dapp.js"],
     "index.html": "app/index.html",
-    "images/": ["app/images/**"]
+    "images/": ["app/images/**"],
+    "css/bootstrap.min.css": "node_modules/bootstrap/dist/css/bootstrap.min.css"
   },
   "buildDir": "dist/",
   "config": "config/",
   "versions": {
-    "web3": "1.0.0-beta",
-    "solc": "0.5.1",
-    "ipfs-api": "17.2.4"
+    "solc": "0.7.0"
   },
   "plugins": {
-    "embarkjs-connector-web3": {}
+    "embark-ipfs": {},
+    "embark-swarm": {},
+    "embark-whisper-geth": {},
+    "embark-geth": {},
+    "embark-parity": {},
+    "embark-profiler": {},
+    "embark-graph": {},
+    "embark-basic-pipeline": {}
   },
   "options": {
     "solc": {
