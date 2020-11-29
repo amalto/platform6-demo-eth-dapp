@@ -24,6 +24,6 @@
   "gitHead": "21f5367bebe10594ffcc26f3aa4b574b1226472a",
   "dependencies": {
     "uuid": "^3.3.2",
-    "uuid-to-hex": "^1.0.3"
+    "uuid-to-hex": "^1.1.1"
   }
 }
