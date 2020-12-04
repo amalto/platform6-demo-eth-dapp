@@ -1,4 +1,4 @@
-pragma solidity ^0.5.1;
+pragma solidity ^0.7.5;
 
 import "remix_tests.sol"; // this import is automatically injected by Remix.
 import "./RequestForQuotations.sol";
